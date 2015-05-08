@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style type="text/css">
+
+@font-face { font-family: "flagfont"; src: url('fonts/font1.ttf'); } 
+@font-face { font-family: "buttfont"; src: url('fonts/font2.ttf'); } 
+
+body{
+background: url('weatherapp/backgrounds/11.jpg') no-repeat center center fixed;
+}
+
+
+.wrapper {
+   min-height: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+}
+
+#tfont{
+  font-family: flagfont;
+  color: black;
+  font-size: 3.5em;
+}
+
+#bfont{
+  font-family: buttfont;
+  font-size: 2.6em;
+}
+
+
+</style>
+
+ <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+</head>
+<body>
+
+
+<div class="container">
+    
+  <div id="bfont" style = "text-align:center">Settings</div>
+
+    <form>
+    <div class="form-group">
+       <label for="sel1">Gender:</label>
+       <select class="form-control" id="gender">
+          <option>Male</option>
+          <option>Female</option>
+       </select>
+    </div>
+
+    
+
+
+
+<div style="text-align: center;"><a href="index.html" class="btn btn-info btn-lg" id="savpe"> Save Settings</a></div>
+    </form>
+
+
+
+
+
+</div>
+
+
+<script type="text/javascript">
+
+
+
+
+var x = document.getElementById("coor");
+
+function getDetails() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+function showPosition(position) {
+    
+
+    $.ajax({
+  url : "http://api.wunderground.com/api/34988b359164cb80/geolookup/conditions/q/NJ/Newark.json",
+  dataType : "jsonp",
+  success : function(parsed_json) {
+  var city = parsed_json['location']['city'];
+  var state = parsed_json['location']['state'];
+  var zip = parsed_json['location']['zip'];
+  var temp = parsed_json['current_observation']['temp_f'];
+  var type = parsed_json['current_observation']['weather'];
+  var humidity = parsed_json['current_observation']['relative_humidity'];
+  var wind = parsed_json['current_observation']['wind_mph'];
+  var uv = parsed_json['current_observation']['UV'];
+  var icon = parsed_json['current_observation']['icon'];
+  
+
+var z = document.getElementById("details");
+z.innerHTML = "Location: "+ city +", "+state+" "+zip+ "<br> Temperature:" + temp+"&#176;F <br> Weather: " + type
+        +"<br> Humidity: "+ humidity + " <br> Wind: "+wind+" mph"+ " <br> UV Index: "+uv ;
+
+  }
+  });
+
+   /* x.innerHTML = "Latitude: " + position.coords.latitude + 
+    "<br>Longitude: " + position.coords.longitude; 
+    //LOCATION STATS */
+
+}
+
+(function (global) {
+document.getElementById("savpe").addEventListener("click", function () {
+  global.localStorage.setItem("mySharedData", document.getElementById("gender").value);
+}, false);
+ }(window)); 
+
+
+
+</script>
+  
+</body>
+</html>

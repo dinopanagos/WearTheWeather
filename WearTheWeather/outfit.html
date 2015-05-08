@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style type="text/css">
+
+@font-face { font-family: "flagfont"; src: url('fonts/font1.ttf'); } 
+@font-face { font-family: "buttfont"; src: url('fonts/font2.ttf'); } 
+
+body{
+background: url('weatherapp/backgrounds/5.jpg') no-repeat center center fixed;
+}
+
+
+.wrapper {
+   min-height: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+}
+
+#tfont{
+  font-family: flagfont;
+  color: black;
+  font-size: 3.5em;
+}
+
+#bfont{
+  font-family: buttfont;
+  font-size: 2.6em;
+  color:white;
+ 
+}
+#bfontright{
+  font-family: buttfont;
+  font-size: 2.6em;
+  float: right;
+  margin-right:20px;
+  margin-top: 15px;
+}
+#bfontleft{
+  margin-left: 10px;
+  float: left;
+  color:white;
+}
+
+.container {
+	
+	overflow: auto;
+	width: 100%
+}
+
+</style>
+
+ <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+
+</head>
+
+<body onLoad="javascript:getDetails()">
+
+
+<div id="container"> 
+	<div id="bfont" style="text-align:center">Today's Outfit </div> <br>
+
+	<div id= "bfontleft">
+		
+		<div style="font-family:buttfont; font-size:2.6em; margin-top:20px;">Accessory</div>
+		<div style="font-family:buttfont; font-size:2.6em;margin-top:25px;">Top</div>
+		<div style="font-family:buttfont; font-size:2.6em;margin-top:30px;">Bottom</div>
+		<div style="font-family:buttfont; font-size:2.6em;margin-top:35px;">Feet</div>
+		<br><br>
+		
+		<button onclick="showStats()" style="font-family:buttfont; font-size:1.8em; margin-left:5px; color:black;">Check Details</button>
+		<div style="color:white; "><div id="details" ></div></div>
+		
+	</div>
+
+	
+
+
+	<div id= "bfontright">
+		<span id="a" style ="margin-top:30px; margin-right:30px;"></span><img id = "acc" src=""  style="margin-bottom:10px;"><br>
+		<span id="t" style ="margin-top:30px; margin-right:30px;"></span><img id="top" src="" style="margin-bottom:10px;"><br>
+		<span id="b" style ="margin-top:30px; margin-right:30px;"></span><img id= "bot" src="" style="margin-bottom:10px;"><br>
+	   <span id="f" style ="margin-top:30px; margin-right:30px;"></span><img id = "feet" src="" style="margin-bottom:10px;"><br>
+	</div>
+	
+
+
+	
+</div>
+  
+
+
+<script type="text/javascript">
+
+
+
+
+  
+
+
+
+var x = document.getElementById("coor");
+
+function getDetails() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+function showPosition(position) {
+    
+
+    $.ajax({
+  url : "http://api.wunderground.com/api/34988b359164cb80/geolookup/conditions/q/"+position.coords.latitude+","+position.coords.longitude+".json",
+  dataType : "jsonp",
+  success : function(parsed_json) {
+   city = parsed_json['location']['city'];
+   state = parsed_json['location']['state'];
+   zip = parsed_json['location']['zip'];
+   temp = parsed_json['current_observation']['temp_f'];
+   type = parsed_json['current_observation']['weather'];
+   humidity = parsed_json['current_observation']['relative_humidity'];
+   wind = parsed_json['current_observation']['wind_mph'];
+   uv = parsed_json['current_observation']['UV'];
+   rain = parsed_json['current_observation']['precip_1hr_in'];
+  
+
+ preloader();
+
+  }
+  });
+
+   /* x.innerHTML = "Latitude: " + position.coords.latitude + 
+    "<br>Longitude: " + position.coords.longitude; */
+    //LOCATION STATS
+
+}
+
+
+
+function showStats()
+{
+  z = document.getElementById("details");
+z.innerHTML = "Location: "+ city +", "+state+" "+zip+ "<br> Temperature:" + temp+"&#176;F <br> Weather: " + type
+        +"<br> Humidity: "+ humidity + " <br> Wind: "+wind+" mph"+ " <br> UV Index: "+uv ;
+}
+
+
+function preloader() 
+
+{
+//  (function (global) {
+  //  document.getElementById("output").value = global.localStorage.getItem("mySharedData");
+   //}(window));
+
+  if (localStorage.getItem("mySharedData") ==  "Male")
+  {
+    //ACCESSORYS
+      if(rain>0)
+      {
+        document.getElementById("acc").src = "weatherapp/men/accessory/umbrella.png";
+        document.getElementById("a").innerHTML = "Umbrella";
+      }
+      else if (temp<40)
+        {
+          document.getElementById("acc").src = "weatherapp/men/accessory/winter_hat.png";
+          document.getElementById("a").innerHTML = "Skully";
+       }
+      else if(uv==2||uv==1)
+       {
+        document.getElementById("acc").src = "weatherapp/men/accessory/cap.png";
+        document.getElementById("a").innerHTML = "Cap";
+        }
+      else if((uv>2))
+     {
+      document.getElementById("acc").src = "weatherapp/men/accessory/sunglasses.png";
+      document.getElementById("a").innerHTML = "Sunglasses";
+      }
+      else if(temp<60&&temp>50)
+        {
+          document.getElementById("acc").src = "weatherapp/men/accessory/fedora.png";
+          document.getElementById("a").innerHTML = "Fedora";
+          }
+      else
+       {
+        document.getElementById("acc").src = "weatherapp/men/accessory/watch.png";
+        document.getElementById("a").innerHTML = "Watch";
+        }
+
+      //tops
+      if(rain>0)
+       {
+        document.getElementById("top").src = "weatherapp/men/top/jacket.png";
+        document.getElementById("t").innerHTML = "Rain Jacket";
+        }
+      else if (temp<35)
+       {
+        document.getElementById("top").src = "weatherapp/men/top/hoodie.png";
+        document.getElementById("t").innerHTML = "Hoodie";
+        }
+      else if(uv==2||uv==1)
+       {
+        document.getElementById("top").src = "weatherapp/men/top/flannel.png";
+        document.getElementById("t").innerHTML = "Flannel";
+        }
+      else if(temp<75&&temp>50)
+       {
+        document.getElementById("top").src = "weatherapp/men/top/polo.png";
+        document.getElementById("t").innerHTML = "Polo";
+        }
+      else if(temp>35&&temp<=50)
+       {
+        document.getElementById("top").src = "weatherapp/men/top/sweater.png";
+        document.getElementById("t").innerHTML = "Sweater";
+        }
+      else if((uv>2))
+      {
+        document.getElementById("top").src = "weatherapp/men/top/cottonshirt.png";
+        document.getElementById("t").innerHTML = "Cotton Tee";
+        }
+      else
+      {
+        document.getElementById("top").src = "weatherapp/men/top/tshirt.png";
+        document.getElementById("t").innerHTML = "T-shirt";
+        }
+
+    //bottoms
+      if(rain>0)
+       {
+        document.getElementById("bot").src = "weatherapp/men/bottom/slacks.png";
+        document.getElementById("b").innerHTML = "Slacks";
+        }
+      else if (temp<35)
+       {
+        document.getElementById("bot").src = "weatherapp/men/bottom/trousers.png";
+        document.getElementById("b").innerHTML = "Trousers";
+        }
+      else if(uv==2||uv==1)
+       {
+        document.getElementById("bot").src = "weatherapp/men/bottom/sweatpants.png";
+        document.getElementById("b").innerHTML = "Sweatpants";
+        }
+      else if(temp<65&&temp>35)
+       {
+        document.getElementById("bot").src = "weatherapp/men/bottom/jeans.png";
+        document.getElementById("b").innerHTML = "Jeans";
+        }
+      else if(temp>=65)
+      {
+        document.getElementById("bot").src = "weatherapp/men/bottom/shortpants.png";
+        document.getElementById("b").innerHTML = "Shorts";
+        }
+      else
+      {
+        document.getElementById("bot").src = "weatherapp/men/bottom/longpants.png";
+        document.getElementById("b").innerHTML = "Pants";
+        }
+
+    //feet
+      if(rain>0||temp<=35)
+       {
+        document.getElementById("feet").src = "weatherapp/men/feet/boots.png";
+        document.getElementById("f").innerHTML = "Boots";
+        }
+      else if(temp<65&&temp>35)
+       {
+        document.getElementById("feet").src = "weatherapp/men/feet/sneakers.png";
+          document.getElementById("f").innerHTML = "Sneakers";
+        }
+      else if(temp>=65)
+      {
+        document.getElementById("feet").src = "weatherapp/men/feet/sandles.png";
+          document.getElementById("f").innerHTML = "Sandals";
+        }
+     
+      else
+      {
+        document.getElementById("feet").src = "weatherapp/men/feet/shoes.png";
+          document.getElementById("f").innerHTML = "Shoes";
+      }
+
+  }
+  else
+  {
+     if(rain>0)
+      {
+        document.getElementById("acc").src = "weatherapp/women/accessory/umbrella.png";
+         document.getElementById("a").innerHTML = "Umbrella";
+      }
+      else if (temp<40)
+        {
+        document.getElementById("acc").src = "weatherapp/women/accessory/necklace.png";
+         document.getElementById("a").innerHTML = "Necklace";
+      }
+      else if(uv==2||uv==1)
+        {
+        document.getElementById("acc").src = "weatherapp/women/accessory/sunhat.png";
+         document.getElementById("a").innerHTML = "Sun Hat";
+      }
+      else if((uv>2))
+        {
+      document.getElementById("acc").src = "weatherapp/women/accessory/sunglasses.png";
+       document.getElementById("a").innerHTML = "Sunglasses";
+    }
+      else if(temp<60&&temp>50)
+        {
+        document.getElementById("acc").src = "weatherapp/women/accessory/hat.png";
+         document.getElementById("a").innerHTML = "Hat";
+      }
+      else
+      {
+        document.getElementById("acc").src = "weatherapp/women/accessory/clutch.png";
+        document.getElementById("a").innerHTML = "Clutch";
+      }
+      //tops
+      if(rain>0 || temp < 35)
+        {
+        document.getElementById("top").src = "weatherapp/women/top/parka.png";
+         document.getElementById("t").innerHTML = "Parka";
+      }
+      else if(temp<50&&temp>=35)
+        {
+        document.getElementById("top").src = "weatherapp/women/top/sweater2.png";
+         document.getElementById("t").innerHTML = "Sweater";
+      }
+      else if(temp>65)
+        {
+      document.getElementById("top").src = "weatherapp/women/top/tanktop.png";
+       document.getElementById("t").innerHTML = "Tank Top";
+    }
+    
+      else
+        {
+      document.getElementById("top").src = "weatherapp/women/top/blouse.png";
+       document.getElementById("t").innerHTML = "Blouse";
+    }
+
+    //bottoms
+     if(rain>0 || temp < 45)
+      {
+        document.getElementById("bot").src = "weatherapp/women/bottom/jeans.png";
+         document.getElementById("b").innerHTML = "Jeans";
+      }
+      else if(temp<65&&temp>=45)
+        {
+        document.getElementById("bot").src = "weatherapp/women/bottom/skirt.png";
+        document.getElementById("b").innerHTML = "Skirt";
+      }
+      else if(temp>=65&&temp<75)
+        {
+      document.getElementById("bot").src = "weatherapp/women/bottom/miniskirt.png";
+      document.getElementById("b").innerHTML = "Mini Skirt";
+    }
+      else
+        {
+      document.getElementById("bot").src = "weatherapp/women/bottom/sweatpants.png";
+      document.getElementById("b").innerHTML = "Sweat Pants";
+    }
+
+    //feet
+      if(rain>0||temp<=35)
+        {
+        document.getElementById("feet").src = "weatherapp/women/feet/rainboots.png";
+        document.getElementById("f").innerHTML = "RainBoots";
+      }
+      else if(temp<55&&temp>35)
+        {
+        document.getElementById("feet").src = "weatherapp/women/feet/boots.png";
+        document.getElementById("f").innerHTML = "Boots";
+      }
+      else if(temp>=75)
+        {
+      document.getElementById("feet").src = "weatherapp/women/feet/flipflops.png";
+      document.getElementById("f").innerHTML = "Flip Flops";
+    }
+      else
+      {
+      document.getElementById("feet").src = "weatherapp/women/feet/heels.png";
+      document.getElementById("f").innerHTML = "Heels";
+    }
+   }
+}
+
+  
+</script>
+
+</body>
+
+
+
+
+</html>

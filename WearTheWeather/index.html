@@ -1,0 +1,113 @@
+<html>
+<head>
+
+<style type="text/css">
+
+@font-face { font-family: "flagfont"; src: url('fonts/font1.ttf'); } 
+@font-face { font-family: "buttfont"; src: url('fonts/font2.ttf'); } 
+
+body{
+background: url('weatherapp/backgrounds/2.jpg') no-repeat center center fixed;
+}
+
+
+.wrapper {
+   min-height: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+}
+
+#tfont{
+	font-family: flagfont;
+	color: black;
+	font-size: 3.5em;
+}
+
+#bfont{
+	font-family: buttfont;
+}
+
+
+</style>
+
+ <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+ 
+<script type="text/javascript">
+$(document).ready(function () {
+    $(document).ajaxStart(function () {
+        $("#loading").show();
+    }).ajaxStop(function () {
+        $("#loading").hide();
+    });
+});
+
+getDetails();
+
+var x = document.getElementById("coor");
+
+function getDetails() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+function showPosition(position) {
+    
+
+$.ajax({
+  url : "http://api.wunderground.com/api/34988b359164cb80/geolookup/conditions/q/"+position.coords.latitude+","+position.coords.longitude+".json",
+  dataType : "jsonp",
+  success : function(parsed_json) {
+  var city = parsed_json['location']['city'];
+  var state = parsed_json['location']['state'];
+
+  var temp = parsed_json['current_observation']['temp_f'];
+
+  var icon = parsed_json['current_observation']['icon_url'];
+
+  
+
+var z = document.getElementById("front");
+z.innerHTML =  city +", "+state+ "<br> " + temp+"&#176;F <br> <img src="+icon+" >";
+
+  }
+  });
+
+   /* x.innerHTML = "Latitude: " + position.coords.latitude + 
+    "<br>Longitude: " + position.coords.longitude; */
+    //LOCATION STATS
+
+}
+
+
+</script>
+</head>
+<body>
+
+
+<div class="wrapper">
+		<div id="tfont"> [wHaT|tO|wEaR?] </div>
+			<div id="bfont">
+
+				<div id="front" style="text-align: center; font-size:2.5em;"> </div>
+
+
+  				<div style="text-align: center;"><a href="outfit.html" class="btn btn-info btn-lg"> Find My Outfit!</a></div>
+  				<div style="text-align: center; padding-top:5px;"><a href="settings.html" class="btn btn-info btn-lg"><span class="glyphicon glyphicon-cog"></span> </a></div>
+  				
+  	  </div>
+</div>
+
+
+
+
+  
+</body>
+</html>
